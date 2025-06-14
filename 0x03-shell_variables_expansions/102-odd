@@ -1,0 +1,2 @@
+#!/bin/bash
+pr -t2 | cut -f1
