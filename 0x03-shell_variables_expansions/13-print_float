@@ -1,2 +1,2 @@
 #!/bin/bash
-printf "%.2f\n" "$NUM"
+while read n; do printf "%.2f\n" "$n"; done
