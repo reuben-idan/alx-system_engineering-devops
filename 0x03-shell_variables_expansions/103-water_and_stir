@@ -1,3 +1,2 @@
 #!/bin/bash
-tr "w.aetris" "sctbhole" <<< "$WATER$STIR" | head -c 9
-
+echo "Not implemented" 
