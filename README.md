@@ -1,35 +1,61 @@
-# Shell, Init Files, Variables and Expansions
+# 0x03. Shell, init files, variables and expansions
 
-This repository contains concise Bash scripts and documentation designed to demonstrate essential shell concepts, including initialization files, variable management, expansions, arithmetic, and aliasing. All scripts are tailored for Ubuntu 20.04 LTS and strictly adhere to a two-line format.
+This project covers shell initialization files, variables, and expansions in Bash scripting.
 
-## Contents
+## Scripts
 
-- **Shell Initialization**: Explore how `/etc/profile`, `/etc/profile.d/`, and `~/.bashrc` affect your shell environment.
-- **Variables**: Learn about local, global, and reserved variables, including special parameters and environment management.
-- **Expansions**: Understand shell expansions, quoting, and command substitution.
-- **Shell Arithmetic**: Perform calculations directly in the shell.
-- **Aliases**: Create, list, and manage shell aliases.
+### Mandatory Tasks
 
-## Usage
+- **0-alias**: Creates an alias `ls` with value `rm *`
+- **1-hello_you**: Prints "hello" followed by the current Linux user
+- **2-path**: Adds `/action` to the PATH environment variable
+- **3-paths**: Counts the number of directories in the PATH
+- **4-global_variables**: Lists all environment variables
+- **5-local_variables**: Lists all local variables, environment variables, and functions
+- **6-create_local_variable**: Creates a new local variable `BEST` with value `School`
+- **7-create_global_variable**: Creates a new global variable `BEST` with value `School`
+- **8-true_knowledge**: Prints the result of 128 plus the `TRUEKNOWLEDGE` environment variable
+- **9-divide_and_rule**: Prints the result of `POWER` divided by `DIVIDE` environment variables
+- **10-love_exponent_breath**: Displays `BREATH` to the power of `LOVE`
+- **11-binary_to_decimal**: Converts `BINARY` from base 2 to base 10
+- **12-combinations**: Prints all possible combinations of two letters (a-z), except "oo"
+- **13-print_float**: Prints `NUM` with two decimal places
 
-1. Ensure each script is executable:
-   ```bash
-   chmod +x script_name
-   ```
-2. Run the script:
-   ```bash
-   ./script_name
-   ```
+### Advanced Tasks
+
+- **100-decimal_to_hexadecimal**: Converts `DECIMAL` from base 10 to base 16
+- **101-rot13**: Encodes and decodes text using rot13 encryption
+- **102-odd**: Prints every other line from input, starting with the first line
+- **103-water_and_stir**: Adds two numbers in custom bases (WATER in base "water", STIR in base "stir") and prints result in base "bestchol"
 
 ## Requirements
 
-- All scripts are exactly two lines and end with a newline.
-- Only Bash built-ins and allowed commands are used (no `bc`, `sed`, or `awk`).
-- Compatible editors: vi, vim, emacs.
+- All scripts must be exactly 2 lines long
+- All scripts must start with `#!/bin/bash`
+- All files must end with a new line
+- No use of `&&`, `||`, `;`, `bc`, `sed`, or `awk` (except where specifically required)
+- All files must be executable
 
-## Structure
+## Usage
 
-Each file demonstrates a targeted Bash concept. Refer to the filename for its purpose or consult in-script comments for details.
+Make all scripts executable:
+
+```bash
+chmod +x 0x03-shell_variables_expansions/*
+```
+
+Run any script:
+
+```bash
+./0x03-shell_variables_expansions/script_name
+```
+
+For scripts that use environment variables, set them first:
+
+```bash
+export VARIABLE_NAME=value
+./0x03-shell_variables_expansions/script_name
+```
 
 ## References
 
