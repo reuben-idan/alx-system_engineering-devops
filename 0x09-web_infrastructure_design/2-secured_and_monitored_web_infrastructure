@@ -293,4 +293,30 @@ Internal Firewalls:
 - Implement automatic failover
 - Deploy multiple database primaries
 - Use container orchestration (Kubernetes)
-- Implement blue-green deployments 
+- Implement blue-green deployments
+
+## URLs
+
+### Primary URLs:
+- **`https://www.foobar.com`** - Main website with SSL encryption
+- **`http://www.foobar.com`** - Redirects to HTTPS
+
+### Load Balancer:
+- **`https://8.8.8.8`** - Secure access to load balancer
+- **`http://8.8.8.8`** - Redirects to HTTPS
+
+### Web Servers (Internal):
+- **`http://8.8.8.9`** - Internal access to Web Server 1
+- **`http://8.8.8.10`** - Internal access to Web Server 2
+- **`http://8.8.8.11`** - Internal access to Web Server 3
+
+### DNS Configuration:
+- **Domain:** `foobar.com`
+- **Subdomain:** `www.foobar.com`
+- **DNS Record:** CNAME record pointing `www.foobar.com` → `8.8.8.8` (load balancer)
+
+### Service Ports:
+- **Load Balancer:** Port 443 (HTTPS), Port 80 (HTTP redirect)
+- **Web Servers:** Port 80 (HTTP - internal)
+- **Application Servers:** Port 3000 (internal)
+- **Database:** Port 3306 (internal) 
