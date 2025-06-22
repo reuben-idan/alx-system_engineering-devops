@@ -1,0 +1,260 @@
+# Scale Up - Advanced Web Infrastructure Design
+
+## Infrastructure Overview
+
+```
+┌─────────────────┐    ┌─────────────────────────────────────────┐
+│   User Browser  │    │              Internet                   │
+│                 │◄──►│                                         │
+└─────────────────┘    └─────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        DNS Server                              │
+│  www.foobar.com ──► Load Balancer Cluster IP                  │
+└─────────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Load Balancer Cluster                       │
+│  ┌─────────────────┐  ┌─────────────────────────────────────┐   │
+│  │ Load Balancer 1 │  │         Load Balancer 2             │   │
+│  │ IP: 8.8.8.8     │◄─►│         IP: 8.8.8.9                │   │
+│  │ HAProxy         │  │         HAProxy                     │   │
+│  │ Port: 80/443    │  │         Port: 80/443                │   │
+│  │ Active          │  │         Passive                     │   │
+│  └─────────────────┘  └─────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                                │
+                    ┌───────────┼───────────┐
+                    ▼           ▼           ▼
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│   Web Server 1  │ │   Web Server 2  │ │   Web Server 3  │
+│   IP: 8.8.8.10  │ │   IP: 8.8.8.11  │ │   IP: 8.8.8.12  │
+│   Port: 80      │ │   Port: 80      │ │   Port: 80      │
+│   Nginx         │ │   Nginx         │ │   Nginx         │
+│   (Static Files)│ │   (Static Files)│ │   (Static Files)│
+└─────────────────┘ └─────────────────┘ └─────────────────┘
+         │                    │                    │
+         └──────────┼─────────┴──────────┼─────────┘
+                     ▼                    ▼
+         ┌─────────────────┐  ┌─────────────────┐
+         │ Application     │  │ Application     │
+         │ Server 1        │  │ Server 2        │
+         │ IP: 8.8.8.13    │  │ IP: 8.8.8.14    │
+         │ Port: 3000      │  │ Port: 3000      │
+         │ (Business Logic)│  │ (Business Logic)│
+         └─────────────────┘  └─────────────────┘
+                     │                    │
+                     └──────────┼─────────┘
+                                ▼
+         ┌─────────────────────────────────────────────────┐
+         │              Database Cluster                   │
+         │  ┌─────────────────┐  ┌─────────────────────┐   │
+         │  │   Primary DB    │  │     Replica DB      │   │
+         │  │   (Master)      │◄─►│     (Slave)        │   │
+         │  │   IP: 8.8.8.15  │  │   IP: 8.8.8.16     │   │
+         │  │   Port: 3306    │  │   Port: 3306        │   │
+         │  │   MySQL         │  │   MySQL             │   │
+         │  │   (Data Store)  │  │   (Data Store)      │   │
+         │  └─────────────────┘  └─────────────────────┘   │
+         └─────────────────────────────────────────────────┘
+```
+
+## Infrastructure Components
+
+### 1. Load Balancer Cluster (2x HAProxy)
+- **Load Balancer 1**: IP 8.8.8.8, Port 80/443 (Active)
+- **Load Balancer 2**: IP 8.8.8.9, Port 80/443 (Passive)
+- **Role**: High availability load balancing with failover
+- **Configuration**: Active-Passive cluster setup
+
+### 2. Web Servers (3x Nginx)
+- **Server 1**: IP 8.8.8.10, Port 80
+- **Server 2**: IP 8.8.8.11, Port 80
+- **Server 3**: IP 8.8.8.12, Port 80
+- **Role**: Serve static content (HTML, CSS, JS, images)
+- **Component**: Dedicated web server layer
+
+### 3. Application Servers (2x)
+- **Server 1**: IP 8.8.8.13, Port 3000
+- **Server 2**: IP 8.8.8.14, Port 3000
+- **Role**: Execute business logic and application code
+- **Component**: Dedicated application server layer
+
+### 4. Database Cluster (2x MySQL)
+- **Primary DB**: IP 8.8.8.15, Port 3306 (Master)
+- **Replica DB**: IP 8.8.8.16, Port 3306 (Slave)
+- **Role**: Data storage and management
+- **Component**: Dedicated database layer
+
+## Why Additional Elements Are Added
+
+### 1. Load Balancer Cluster
+- **Purpose**: Eliminate single point of failure at load balancer level
+- **Benefits**: 
+  - High availability with automatic failover
+  - No downtime during load balancer maintenance
+  - Redundant traffic distribution
+  - Improved reliability
+
+### 2. Separated Component Servers
+- **Purpose**: Dedicated servers for each component type
+- **Benefits**:
+  - **Resource Optimization**: Each server optimized for specific workload
+  - **Independent Scaling**: Scale components based on demand
+  - **Security**: Reduced attack surface per server
+  - **Maintenance**: Update components without affecting others
+  - **Performance**: No resource contention between components
+
+### 3. Dedicated Web Servers
+- **Purpose**: Handle static content delivery
+- **Benefits**:
+  - Optimized for file serving
+  - Better caching strategies
+  - Reduced load on application servers
+  - Improved response times for static assets
+
+### 4. Dedicated Application Servers
+- **Purpose**: Handle business logic and dynamic content
+- **Benefits**:
+  - Optimized for CPU-intensive operations
+  - Better memory management for application code
+  - Independent scaling based on application load
+  - Easier debugging and monitoring
+
+### 5. Dedicated Database Servers
+- **Purpose**: Handle data storage and queries
+- **Benefits**:
+  - Optimized for I/O operations
+  - Better disk performance
+  - Dedicated memory for database operations
+  - Improved query performance
+
+## Application Server vs Web Server
+
+### Web Server (Nginx)
+- **Primary Function**: Serve static content
+- **Responsibilities**:
+  - Handle HTTP requests
+  - Serve HTML, CSS, JavaScript files
+  - Serve images and other static assets
+  - Handle SSL/TLS termination
+  - Act as reverse proxy to application servers
+  - Implement caching strategies
+
+- **Characteristics**:
+  - Optimized for file I/O
+  - High concurrency handling
+  - Efficient static content delivery
+  - Lightweight and fast
+
+### Application Server
+- **Primary Function**: Execute business logic
+- **Responsibilities**:
+  - Process dynamic content
+  - Handle user sessions
+  - Execute application code
+  - Manage application state
+  - Handle database interactions
+  - Process form submissions
+
+- **Characteristics**:
+  - CPU-intensive operations
+  - Memory management for application state
+  - Session handling
+  - Business logic execution
+
+## Load Balancer Cluster Configuration
+
+### Active-Passive Setup
+- **Active Load Balancer**: Handles all incoming traffic
+- **Passive Load Balancer**: Standby for failover
+- **Failover Mechanism**: Automatic switch when active fails
+- **Health Checks**: Continuous monitoring of active load balancer
+
+### Benefits of Clustering
+1. **High Availability**: No single point of failure
+2. **Zero Downtime**: Seamless failover
+3. **Maintenance**: Update passive while active serves traffic
+4. **Reliability**: Redundant traffic distribution
+
+## Traffic Flow
+
+### User Request Flow:
+1. **DNS Resolution**: `www.foobar.com` → Load Balancer Cluster
+2. **Load Balancer**: Active LB distributes traffic to web servers
+3. **Web Server**: Nginx serves static content or forwards to app servers
+4. **Application Server**: Processes dynamic requests and business logic
+5. **Database**: Stores/retrieves data as needed
+6. **Response**: Data flows back through the chain
+
+### Static vs Dynamic Content:
+- **Static Content**: Served directly by web servers
+- **Dynamic Content**: Forwarded to application servers for processing
+
+## Scaling Benefits
+
+### Horizontal Scaling
+- **Web Servers**: Add more servers for increased static content demand
+- **Application Servers**: Add more servers for increased processing demand
+- **Database**: Add read replicas for increased read demand
+
+### Vertical Scaling
+- **Resource Allocation**: Optimize each server for its specific role
+- **Performance**: Better resource utilization per component
+- **Efficiency**: Reduced resource waste
+
+## URLs
+
+### Primary URLs:
+- **`http://www.foobar.com`** - Main website
+- **`https://www.foobar.com`** - Secure version
+
+### Load Balancer Cluster:
+- **`http://8.8.8.8`** - Active load balancer
+- **`http://8.8.8.9`** - Passive load balancer (standby)
+
+### Web Servers:
+- **`http://8.8.8.10`** - Web Server 1
+- **`http://8.8.8.11`** - Web Server 2
+- **`http://8.8.8.12`** - Web Server 3
+
+### Application Servers:
+- **`http://8.8.8.13:3000`** - Application Server 1
+- **`http://8.8.8.14:3000`** - Application Server 2
+
+### Database Servers:
+- **`8.8.8.15:3306`** - Primary Database (internal)
+- **`8.8.8.16:3306`** - Replica Database (internal)
+
+### DNS Configuration:
+- **Domain:** `foobar.com`
+- **Subdomain:** `www.foobar.com`
+- **DNS Record:** CNAME record pointing `www.foobar.com` → Load Balancer Cluster
+
+### Service Ports:
+- **Load Balancers:** Port 80 (HTTP) / Port 443 (HTTPS)
+- **Web Servers:** Port 80 (HTTP)
+- **Application Servers:** Port 3000
+- **Database:** Port 3306 (internal)
+
+## Additional Considerations
+
+### Security
+- Network segmentation between layers
+- Firewalls for each component type
+- SSL/TLS encryption
+- Access control per layer
+
+### Monitoring
+- Component-specific monitoring
+- Performance metrics per layer
+- Health checks for each service
+- Capacity planning per component
+
+### Maintenance
+- Rolling updates per component type
+- Independent backup strategies
+- Component-specific disaster recovery
+- Testing procedures per layer 
