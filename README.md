@@ -40,13 +40,13 @@ This project covers shell initialization files, variables, and expansions in Bas
 
 Make all scripts executable:
 
-```bash
+   ```bash
 chmod +x 0x03-shell_variables_expansions/*
-```
+   ```
 
 Run any script:
 
-```bash
+   ```bash
 ./0x03-shell_variables_expansions/script_name
 ```
 
