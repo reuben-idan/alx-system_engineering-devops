@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Script to configure nginx with custom 404 page
+
+# Update package list
+apt-get update
+
+# Install nginx with -y flag to avoid prompts
+apt-get install -y nginx
+
+# Create the default nginx site configuration with custom 404
+cat > /etc/nginx/sites-available/default << 'EOF'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    
+    root /var/www/html;
+    index index.html index.htm;
+    
+    server_name _;
+    
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+    
+    error_page 404 /404.html;
+    
+    location = /404.html {
+        internal;
+    }
+}
+EOF
+
+# Create the index.html file with "Hello World!"
+echo "Hello World!" > /var/www/html/index.html
+
+# Create the custom 404 page
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
+# Start nginx (not using systemctl as per requirements)
+service nginx start 

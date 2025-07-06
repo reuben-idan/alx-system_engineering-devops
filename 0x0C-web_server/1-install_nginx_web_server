@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Script to install and configure nginx web server
+
+# Update package list
+apt-get update
+
+# Install nginx with -y flag to avoid prompts
+apt-get install -y nginx
+
+# Create the default nginx site configuration
+cat > /etc/nginx/sites-available/default << 'EOF'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    
+    root /var/www/html;
+    index index.html index.htm;
+    
+    server_name _;
+    
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+EOF
+
+# Create the index.html file with "Hello World!"
+echo "Hello World!" > /var/www/html/index.html
+
+# Start nginx (not using systemctl as per requirements)
+service nginx start 
