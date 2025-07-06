@@ -34,6 +34,9 @@ server {
 }
 EOF
 
+# Enable the default site
+ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
 # Create the index.html file with "Hello World!"
 echo "Hello World!" > /var/www/html/index.html
 
@@ -41,4 +44,7 @@ echo "Hello World!" > /var/www/html/index.html
 echo "Ceci n'est pas une page" > /var/www/html/404.html
 
 # Start nginx (not using systemctl as per requirements)
-service nginx start 
+service nginx start
+
+# Test nginx configuration
+nginx -t 
