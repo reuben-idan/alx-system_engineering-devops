@@ -1,0 +1,9 @@
+# START PORT FORWARD 8080 -> 80
+*nat
+:PREROUTING ACCEPT [0:0]
+-A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-port 80
+COMMIT
+# END PORT FORWARD 8080 -> 80
+
+*filter
+# (rest of the original UFW before.rules would follow here) 
