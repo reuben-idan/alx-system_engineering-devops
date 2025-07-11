@@ -10,53 +10,54 @@ exec { 'apt-get update':
 
 # Install nginx package
 package { 'nginx':
-  ensure  => 'installed',
-  require => Exec['apt-get update'],
+  ensure => installed,
 }
 
-# Create the nginx site configuration
+service { 'nginx':
+  ensure     => running,
+  enable     => true,
+  hasrestart => true,
+  hasstatus  => true,
+}
+
+file { '/var/www/html/index.html':
+  ensure  => file,
+  content => "Hello World!\n",
+  require => Package['nginx'],
+}
+
 file { '/etc/nginx/sites-available/default':
-  ensure  => 'present',
-  content => 'server {
+  ensure  => file,
+  content => template('nginx/default.erb'),
+  require => Package['nginx'],
+  notify  => Service['nginx'],
+}
+
+# Template content for /etc/nginx/sites-available/default
+# (You will need to create a template file if running this in a real Puppet setup)
+# For ALX, we can inline the config with a file resource if templates are not supported.
+
+file { '/etc/nginx/sites-available/default':
+  ensure  => file,
+  content => @(END),
+server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    
+
     root /var/www/html;
     index index.html index.htm;
-    
+
     server_name _;
-    
+
     location / {
         try_files $uri $uri/ =404;
     }
-    
+
     location /redirect_me {
         return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
-}',
+}
+END
   require => Package['nginx'],
   notify  => Service['nginx'],
-}
-
-# Enable the default site
-file { '/etc/nginx/sites-enabled/default':
-  ensure => 'link',
-  target => '/etc/nginx/sites-available/default',
-  require => File['/etc/nginx/sites-available/default'],
-  notify  => Service['nginx'],
-}
-
-# Create the index.html file with "Hello World!"
-file { '/var/www/html/index.html':
-  ensure  => 'present',
-  content => 'Hello World!',
-  require => Package['nginx'],
-  notify  => Service['nginx'],
-}
-
-# Ensure nginx service is running
-service { 'nginx':
-  ensure  => 'running',
-  enable  => true,
-  require => [Package['nginx'], File['/etc/nginx/sites-enabled/default']],
 } 
