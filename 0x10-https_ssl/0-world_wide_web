@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Audits subdomains for a given domain, displaying their record type and destination using dig and awk
+
+# Ignore SC2086 for this script
+# shellcheck disable=SC2086
+
+get_subdomain_info() {
+    local domain="$1"
+    local subdomain="$2"
+    local fqdn="${subdomain}.${domain}"
+    local dig_output record_type destination
+
+    dig_output=$(dig $fqdn | awk '/^;; ANSWER SECTION:/ {getline; print}')
+    record_type=$(echo "$dig_output" | awk '{print $4}')
+    destination=$(echo "$dig_output" | awk '{print $5}')
+    if [ -n "$record_type" ] && [ -n "$destination" ]; then
+        echo "The subdomain $subdomain is a $record_type record and points to $destination"
+    fi
+}
+
+main() {
+    local domain="$1"
+    local subdomain="$2"
+    if [ -z "$domain" ]; then
+        exit 1
+    fi
+    if [ -z "$subdomain" ]; then
+        for s in www lb-01 web-01 web-02; do
+            get_subdomain_info "$domain" "$s"
+        done
+    else
+        get_subdomain_info "$domain" "$subdomain"
+    fi
+}
+
+main "$@" 
