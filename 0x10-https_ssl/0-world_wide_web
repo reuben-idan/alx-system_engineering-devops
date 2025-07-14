@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
 # Audits subdomains for a given domain, displaying their record type and destination using dig and awk
 
-# DNS setup required for this script to work as intended:
-#   www      -> 3.83.10.244 (load balancer IP)
-#   lb-01    -> 3.83.10.244 (load balancer IP)
-#   web-01   -> 3.83.23.24  (web-01 IP)
-#   web-02   -> 3.83.128.168 (web-02 IP)
-#
-# Ignore SC2086 for this script
 # shellcheck disable=SC2086
 
 get_subdomain_info() {
