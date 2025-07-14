@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# Installs nginx and configures a 301 redirect from /redirect_me to YouTube
+# Configures a new ubuntu machine by installing
+# Nginx where it should be listening on port 80
+# Serve a page that would return a Hello World string
 
-apt-get update
-apt-get install -y nginx
+sudo apt -y update
+sudo apt -y install nginx
+#ufw allow 'Nginx HTTP'
+echo "Hello World!" | sudo tee /var/www/html/index.html
 
-# Add 301 redirect to nginx config
-sed -i '/server_name _;/a \\    location /redirect_me {\n        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n    }' /etc/nginx/sites-available/default
-
-# Restart nginx using service
-service nginx restart 
+sed -i 's/server_name _;/server_name _;\n\trewrite \/redirect_me https:\/\/www.youtube.com\/watch\?v=QH2-TGUlwu4 permanent;/' /etc/nginx/sites-enabled/default
+sudo service nginx restart

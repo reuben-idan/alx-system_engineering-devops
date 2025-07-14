@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
-# Installs nginx and configures a custom 404 page with the string 'Ceci n\'est pas une page'
+# Configures a new ubuntu machine by installing
+# Nginx where it should be listening on port 80
+# Serve a page that would return a Hello World string
 
-apt-get update
-apt-get install -y nginx
+sudo apt -y update
 
-echo "Ceci n'est pas une page" > /var/www/html/custom_404.html
+sudo apt -y install nginx
 
-# Add custom 404 config to nginx
-sed -i '/server_name _;/a \    error_page 404 /custom_404.html;\n    location = /custom_404.html {\n        internal;\n    }' /etc/nginx/sites-available/default
+#ufw allow 'Nginx HTTP'
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
 
-# Restart nginx using service
-service nginx restart 
+sed -i 's/server_name _;/server_name _;\n\trewrite \/redirect_me https:\/\/www.youtube.com\/watch\?v=QH2-TGUlwu4 permanent;\n\terror_page 404 \/404.html;\n\tlocation \/404.html{\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}/' /etc/nginx/sites-enabled/default
+
+sudo service nginx restart

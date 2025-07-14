@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
-# Installs nginx, configures it to serve 'Hello World!' at root, and ensures it is running
+# Requirements:
 
-# Install nginx
-apt-get update
-apt-get install -y nginx
+# Install nginx on your web-01
+# server
+# Nginx should be listening on port 80
 
-# Overwrite the default index.html with Hello World!
-echo 'Hello World!' > /var/www/html/index.html
+# Check if nginx is installed
 
-# Start nginx using service (not systemctl)
-service nginx start 
+# Update package list and install nginx
+sudo apt-get -y update
+sudo apt-get install -y nginx
+
+# Ensure nginx is listening to port 80
+ufw allow 'Nginx HTTP'
+
+# Set up the default page
+echo "Hello World!" > /var/www/html/index.html
+
+# Restart nginx (with/o using systemctl)
+sudo service nginx restart
+

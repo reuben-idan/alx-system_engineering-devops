@@ -1,31 +1,19 @@
-#!/usr/bin/env puppet
+# Using  Puppet to automate creating a custom HTTP header response
 
-# Puppet manifest to add custom X-Served-By HTTP header to nginx
-
-# Update package list
-exec { 'apt-get update':
+exec {'update':
   command => '/usr/bin/apt-get update',
-  path    => '/usr/bin:/usr/sbin:/bin:/sbin',
 }
 
-# Install nginx package
-package { 'nginx':
-  ensure  => 'installed',
-  require => Exec['apt-get update'],
+-> package {'nginx':
+  ensure => 'present',
 }
 
-# Add custom header to nginx configuration
-file_line { 'add X-Served-By header':
-  path    => '/etc/nginx/sites-available/default',
-  line    => '    add_header X-Served-By $hostname;',
-  after   => 'server_name _;',
-  require => Package['nginx'],
-  notify  => Service['nginx'],
+-> file_line { 'http_header':
+  path  => '/etc/nginx/nginx.conf',
+  match => 'http {',
+  line  => "http {\n\tadd_header X-Served-By \"${hostname}\";",
 }
 
-# Ensure nginx service is running
-service { 'nginx':
-  ensure  => 'running',
-  enable  => true,
-  require => Package['nginx'],
-} 
+-> exec {'run':
+  command => '/usr/sbin/service nginx restart',
+}

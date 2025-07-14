@@ -1,3 +1,1 @@
-# Load Balancer Project
-
-Automated scripts for ALX load balancer project.
+This is my project onload balancer
