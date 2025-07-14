@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Audits subdomains for a given domain, displaying their record type and destination using dig and awk
 
+# Ignore SC2086 for this script
 # shellcheck disable=SC2086
 
 get_subdomain_info() {
