@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Installs UFW and configures it to allow only SSH (22), HTTP (80), and HTTPS (443) on web-01
+
+# Install UFW
+apt-get update
+apt-get install -y ufw
+
+# Set default policies
+ufw default deny incoming
+ufw default allow outgoing
+
+# Allow required ports
+ufw allow 22/tcp
+ufw allow 80/tcp
+ufw allow 443/tcp
+
+# Enable UFW
+ufw --force enable
+
+# Show status
+ufw status verbose 
