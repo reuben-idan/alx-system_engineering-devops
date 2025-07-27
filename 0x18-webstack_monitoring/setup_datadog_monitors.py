@@ -9,7 +9,7 @@ from datadog import initialize, api
 
 # Configuration
 DD_API_KEY = "7539ebebc75033fb4dc7c82d753bcb4a"
-DD_APP_KEY = "YOUR_APPLICATION_KEY_HERE"  # Replace with your actual app key
+DD_APP_KEY = "bc5c466ed68251d49653d7eca05c852a"
 
 def setup_datadog():
     """Initialize Datadog API"""
