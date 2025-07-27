@@ -1,0 +1,17 @@
+🎯 FINAL DATADOG INSTALLATION COMMAND
+
+Copy and paste this EXACT command into your ALX Web Terminal:
+
+DD_API_KEY=7539ebebc75033fb4dc7c82d753bcb4a DD_SITE="datadoghq.com" bash -c "$(curl -L https://install.datadoghq.com/scripts/install_script_agent7.sh)" && sudo hostnamectl set-hostname XX-web-01 && sudo systemctl restart datadog-agent && sudo systemctl enable datadog-agent
+
+VERIFICATION COMMAND:
+sudo datadog-agent status
+
+SUCCESS INDICATORS:
+✅ Agent status: "Running"
+✅ No errors in output
+✅ Metrics collection active
+
+DASHBOARD ID: 97u-ndh-2fe
+
+PROJECT COMPLETION: 98% → 100% with this single command!
