@@ -1,0 +1,7 @@
+Django>=4.2,<5.0
+djangorestframework>=3.14
+celery>=5.3
+amqp>=5.1
+drf-yasg>=1.21
+python-dotenv>=1.0
+cloudamqp-client>=1.0
