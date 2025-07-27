@@ -7,10 +7,6 @@ This directory contains the setup for Datadog monitoring on web-01 server.
 - **WEB02_IP**: 52.23.248.46  
 - **WEB03_IP**: 54.164.58.71
 
-## Datadog Account Details
-- **API Key**: 7539ebebc75033fb4dc7c82d753bcb4a
-- **Site**: datadoghq.com (US1 region)
-- **Account URL**: https://app.datadoghq.com
 
 ## Installation Steps
 
