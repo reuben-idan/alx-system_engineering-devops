@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: alx-webstack-monitoring
+    env: python
+    buildCommand: .\build.cmd
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DD_API_KEY
+        description: Your Datadog API Key
+        required: true
+      - key: DD_APP_KEY
+        description: Your Datadog Application Key
+        required: true
